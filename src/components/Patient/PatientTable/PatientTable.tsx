@@ -9,7 +9,8 @@ import { Button, Input, Space, Table, Form, Select, message } from 'antd';
 import Highlighter from 'react-highlight-words';
 import Link from 'next/link';
 import UpdatePatient from 'components/Modal/UpdatePatient/UpdatePatient';
-import { useAuthStore } from 'store/authStore';
+import { useAppSelector } from 'store';
+ 
 
 const { Option } = Select;
 
@@ -23,7 +24,7 @@ const PatientTable = ({ patientData, handleDelete, loading }: any) => {
   const [editingPatient, setEditingPatient] = useState(null);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, isLogin} = useAuthStore();
+  const { role } = useAppSelector((state) => state.auth);
 
   const tableData =
     patientData?.map((data, index) => ({
@@ -258,7 +259,7 @@ const PatientTable = ({ patientData, handleDelete, loading }: any) => {
             Edit
           </Button>
           {
-            user?.role === 'admin' && (
+            role === 'admin' && (
           <Button
             type="link"
             icon={<DeleteOutlined />}

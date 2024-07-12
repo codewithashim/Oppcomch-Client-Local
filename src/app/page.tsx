@@ -2,11 +2,11 @@
 import PreloaderComponent from 'components/preloader/preloadr';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useAuthStore } from 'store/authStore';
+import { useAppSelector } from 'store';
 
 export default function Home() {
   const router = useRouter();
-  const { user, isLogin } = useAuthStore();
+  const isLogin = useAppSelector((state) => state.auth.authState);
   const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Home() {
       router.push('/admin/default');
     }
     setIsLoading(false);
-  }, [user, router, isLogin]);
+  }, [router, isLogin]);
 
   if (isLoading) {
     return <PreloaderComponent/>;

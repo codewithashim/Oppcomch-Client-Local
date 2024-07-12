@@ -7,16 +7,18 @@ import Swal from 'sweetalert2';
 import authImg from '/public/img/auth/auth.png';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from 'store/authStore';
 import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from 'store';
+import { clearAuthState } from 'store/authSlice';
 
 function SidebarHorizon(props: { routes: IRoute[]; open: boolean; setOpen: (open: boolean) => void }) {
   const { routes, open, setOpen } = props;
-  const { user, logOut, isLogin } = useAuthStore();
+  const { role } = useAppSelector((state) => state.auth);
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleLogout = () => {
-    logOut();
+    dispatch(clearAuthState());
     Swal.fire({
       icon: 'success',
       title: 'Log Out successful',
@@ -28,7 +30,7 @@ function SidebarHorizon(props: { routes: IRoute[]; open: boolean; setOpen: (open
 
   // Filter routes based on user role
   const filteredRoutes = routes?.filter(route => {
-    if ((route?.path === 'create-user' || route?.path === 'user-list') && user?.role !== 'admin') {
+    if ((route?.path === 'create-user' || route?.path === 'user-list') && role !== 'admin') {
       return false; // Hide 'Create User' and 'User List' if the user is not an admin
     }
     return true;

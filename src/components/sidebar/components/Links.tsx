@@ -2,13 +2,12 @@ import React, { useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import NavLink from 'components/link/NavLink';
 import DashIcon from 'components/icons/DashIcon';
-import { useAuthStore } from 'store/authStore';
+import { useAppSelector } from 'store';
 
 export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
   const pathname = usePathname();
   const { routes } = props;
-  const { user } = useAuthStore(); 
-
+  const { role } = useAppSelector((state) => state.auth);
   const activeRoute = useCallback(
     (routeName: string) => {
       return pathname?.includes(routeName);
@@ -21,7 +20,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
       if (route?.layout === '/admin' || route?.layout === '/auth') {
         if (
           (route?.path === 'create-user' || route?.path === 'additional-data' || route?.path === 'user-list') &&
-          user?.role !== 'admin'
+         role !== 'admin'
         ) {
           return null; 
         }

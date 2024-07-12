@@ -3,12 +3,10 @@ import useUser from 'hooks/useUser';
 import React from 'react';
 import { Table, Space, Button } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-import { useAuthStore } from 'store/authStore';
-
+import { useAppDispatch, useAppSelector } from 'store';
 const UserList = () => {
   const { userData, confirmDelete } = useUser();
-  const { user } = useAuthStore();
-
+  const { role , name} = useAppSelector((state) => state.auth);
   const columns: any = [
     {
       title: 'Name',
@@ -35,7 +33,7 @@ const UserList = () => {
       key: 'action',
       render: (_: any, record: any) => (
         <Space size="middle">
-          {user?.role === 'admin' && (
+          {role === 'admin' && (
             <Button
               type="link"
               icon={<DeleteOutlined />}

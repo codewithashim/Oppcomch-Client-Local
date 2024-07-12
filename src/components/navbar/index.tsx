@@ -6,10 +6,13 @@ import { FiSearch } from 'react-icons/fi';
 import { RiMoonFill, RiSunFill } from 'react-icons/ri';
 import avatar from '/public/img/avatars/avatar4.png';
 import Image from 'next/image';
-import { useAuthStore } from 'store/authStore';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { MdLock } from 'react-icons/md';
+import { useAppDispatch, useAppSelector } from 'store';
+import { clearAuthState } from 'store/authSlice';
+
+
 
 const Navbar = (props: {
   onOpenSidenav: () => void;
@@ -22,10 +25,11 @@ const Navbar = (props: {
     document.body.classList.contains('dark'),
   );
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { role , name} = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
+    dispatch(clearAuthState());
     Swal.fire({
       icon: 'success',
       title: 'Log Out successful',
@@ -96,7 +100,7 @@ const Navbar = (props: {
         <Dropdown
           button={
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white">
-              {user ? user?.name?.charAt(0).toUpperCase() : 'U'}
+              {name ? name?.charAt(0).toUpperCase() : 'U'}
             </div>
           }
           classNames={'py-2 top-8 -left-[180px] w-max'}
@@ -105,7 +109,7 @@ const Navbar = (props: {
             <div className="ml-4 mt-3">
               <div className="flex items-center gap-2">
                 <p className="text-sm font-bold text-navy-700 dark:text-white">
-                  👋 Hey, {user?.name}
+                  👋 Hey, {name}
                 </p>{' '}
               </div>
             </div>

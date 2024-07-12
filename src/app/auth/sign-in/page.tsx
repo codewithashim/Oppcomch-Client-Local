@@ -8,13 +8,15 @@ import Swal from 'sweetalert2';
 import BtnSpinner from 'components/utils/Spinner/BtnSpinner';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { setAuthState } from 'store/authSlice';
+import { useAppDispatch } from 'store';
 
 function SignInDefault() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
-
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -23,10 +25,23 @@ function SignInDefault() {
     try {
       const response = await axios.post(LoginUrl, { email, password });
       const token = response.data.data.accessToken;
+      const user = response?.data?.data?.userDetail;
 
-      if (token) {
-        localStorage.setItem('accessToken', token);
- 
+      console.log(response, "=====")
+
+      console.log(token , "token=------------")
+
+      if (token && user) {
+        dispatch(
+          setAuthState({
+            authState: true,
+            name: user?.name,
+            email: user?.email,
+            phone: user?.phone,
+            role: user?.role,
+            authtoken: token,
+          }),
+        );
         Swal.fire({
           icon: 'success',
           title: 'Login successful',
