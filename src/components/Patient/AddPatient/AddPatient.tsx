@@ -187,14 +187,13 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.registrationNo"
                 control={control}
-                rules={{ required: "Registration No is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
+                   
                   </>
                 )}
               />
@@ -203,7 +202,6 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.phoneNumber"
                 control={control}
-                rules={{ required: "Phone Number is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -221,7 +219,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.maritalStatus"
                 control={control}
-                rules={{ required: "Marital Status is required" }}
+                
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Select
@@ -244,7 +242,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.occupation"
                 control={control}
-                rules={{ required: "Occupation is required" }}
+               
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -259,7 +257,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.age"
                 control={control}
-                rules={{ required: "Age is required" }}
+                
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -298,7 +296,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.division"
                 control={control}
-                rules={{ required: "Division is required" }}
+                
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Select
@@ -323,7 +321,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.district"
                 control={control}
-                rules={{ required: "District is required" }}
+                
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Select
@@ -353,7 +351,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.thana"
                 control={control}
-                rules={{ required: "Thana/Upazila is required" }}
+               
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Select
@@ -376,7 +374,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.addressDetails"
                 control={control}
-                rules={{ required: "Address Details are required" }}
+               
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -391,7 +389,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.admissionUnit"
                 control={control}
-                rules={{ required: "Admission Unit is required" }}
+             
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -410,7 +408,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.admissionDate"
                 control={control}
-                rules={{ required: "Admission Date is required" }}
+               
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePicker
@@ -431,7 +429,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.releaseDate"
                 control={control}
-                rules={{ required: "Release Date is required" }}
+                
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePicker
@@ -452,7 +450,7 @@ const AddPatient = () => {
               <Controller
                 name="patientInformation.hospitalStay"
                 control={control}
-                rules={{ required: "Hospital Stay is required" }}
+                
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -472,7 +470,7 @@ const AddPatient = () => {
               <Controller
                 name="bmi.height"
                 control={control}
-                rules={{ required: "Height is required" }}
+               
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -480,7 +478,7 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
+                    
                   </>
                 )}
               />
@@ -490,7 +488,7 @@ const AddPatient = () => {
               <Controller
                 name="bmi.weight"
                 control={control}
-                rules={{ required: "Weight is required" }}
+               
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Input
@@ -498,7 +496,7 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
+                    
                   </>
                 )}
               />
