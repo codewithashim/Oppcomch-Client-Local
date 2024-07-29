@@ -82,8 +82,7 @@ const usePatient = () => {
       message.error('An error occurred while  the patient');
     }
   }
-
-
+  
   return {
     patientData,
     confirmDelete,

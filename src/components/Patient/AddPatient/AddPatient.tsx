@@ -24,7 +24,7 @@ import useAdditionalData from 'hooks/useAdditionalData';
 
 const AddPatient = () => {
   const [loading, setLoading] = useState(false);
-  const { control, handleSubmit, reset } = useForm();
+  const { control, handleSubmit, reset , watch} = useForm();
   const {
     chiefComplaints,
     pastIllnessData,
@@ -61,6 +61,12 @@ const AddPatient = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
+      data.bmi = {
+        height: height,
+        weight: weight,
+        value: bmi,
+        category: bmiCategory,
+      };
       const response = await axios.post(CreatePatientUrl, data);
       if (response.data.success) {
         openNotificationWithIcon(
@@ -127,6 +133,30 @@ const AddPatient = () => {
     }
   }, [selectedDistrict]);
 
+  const height = watch('bmi.height');
+  const weight = watch('bmi.weight');
+
+  const calculateBMI = (height, weight) => {
+    if (!height || !weight) return null;
+    const heightInMeters = height / 100;
+    const bmi = weight / (heightInMeters * heightInMeters);
+    return bmi.toFixed(1);
+  };
+
+  const getBMICategory = (bmi) => {
+    if (bmi < 18.5) return 'Underweight';
+    if (bmi >= 18.5 && bmi <= 24.9) return 'Normal Weight';
+    if (bmi >= 25 && bmi <= 29.9) return 'Overweight';
+    if (bmi >= 30 && bmi <= 34.9) return 'Obesity grade 1 (low risk)';
+    if (bmi >= 35 && bmi <= 39.9) return 'Grade 2 obesity (moderate risk)';
+    if (bmi >= 40 && bmi <= 49.9) return 'Grade 3 obesity (high risk, morbid obesity)';
+    if (bmi >= 50) return 'Grade 4 obesity (extreme obesity)';
+    return '';
+  };
+
+  const bmi = calculateBMI(height, weight);
+  const bmiCategory = getBMICategory(bmi);
+
   return (
     <Form
       layout="vertical"
@@ -135,7 +165,7 @@ const AddPatient = () => {
     >
       <Collapse defaultActiveKey={['1', '2', '8', '9']}>
 
-        <Panel header="Patient Information" key="1">
+      <Panel header="Patient Information" key="1">
           <div className="flex w-full flex-col gap-6 lg:flex-row">
             <Form.Item label="Name" className="w-full">
               <Controller
@@ -180,7 +210,6 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -207,7 +236,6 @@ const AddPatient = () => {
                         Married
                       </Option>
                     </Select>
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -223,7 +251,6 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -239,7 +266,6 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -263,7 +289,6 @@ const AddPatient = () => {
                       <Option value="Female">Female</Option>
                       <Option value="Other">Other</Option>
                     </Select>
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -290,7 +315,6 @@ const AddPatient = () => {
                         </Option>
                       ))}
                     </Select>
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -317,7 +341,7 @@ const AddPatient = () => {
                         </Option>
                       ))}
                     </Select>
-                    {error && <p className="text-red-500">{error.message}</p>}
+                    
                   </>
                 )}
               />
@@ -343,7 +367,7 @@ const AddPatient = () => {
                         </Option>
                       ))}
                     </Select>
-                    {error && <p className="text-red-500">{error.message}</p>}
+                    
                   </>
                 )}
               />
@@ -359,7 +383,6 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -375,12 +398,12 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
             </Form.Item>
           </div>
+      
 
           <div className="flex w-full flex-col gap-6 lg:flex-row">
             <Form.Item label="Admission Date" className="w-full">
@@ -399,7 +422,6 @@ const AddPatient = () => {
                       }
                       value={field.value ? moment(field.value) : null}
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -421,7 +443,6 @@ const AddPatient = () => {
                       }
                       value={field.value ? moment(field.value) : null}
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -438,7 +459,6 @@ const AddPatient = () => {
                       {...field}
                       className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                     />
-                    {error && <p className="text-red-500">{error.message}</p>}
                   </>
                 )}
               />
@@ -446,8 +466,57 @@ const AddPatient = () => {
           </div>
         </Panel>
 
+        <Panel header="BMI" key="2">
+        <div className="flex w-full flex-col gap-6 lg:flex-row">
+          <Form.Item label="Height (cm)" className="w-full">
+              <Controller
+                name="bmi.height"
+                control={control}
+                rules={{ required: "Height is required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <Input
+                      type="number"
+                      {...field}
+                      className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                    />
+                    {error && <p className="text-red-500">{error.message}</p>}
+                  </>
+                )}
+              />
+            </Form.Item>
 
-        <Panel header="Chief Complaints" key="2">
+            <Form.Item label="Weight (kg)" className="w-full">
+              <Controller
+                name="bmi.weight"
+                control={control}
+                rules={{ required: "Weight is required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <Input
+                      type="number"
+                      {...field}
+                      className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                    />
+                    {error && <p className="text-red-500">{error.message}</p>}
+                  </>
+                )}
+              />
+            </Form.Item>
+            <Form.Item label="BMI" className="w-full">
+              <Input
+                value={bmi || ''}
+                disabled
+                className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
+              />
+              <Typography.Text>
+                {bmiCategory ? `Category: ${bmiCategory}` : ''}
+              </Typography.Text>
+            </Form.Item>
+          </div>
+        </Panel>
+
+        <Panel header="Chief Complaints" key="3">
           <FieldArrayComponent
             control={control}
             name="chiefComplaints"

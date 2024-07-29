@@ -11,7 +11,6 @@ import Link from 'next/link';
 import UpdatePatient from 'components/Modal/UpdatePatient/UpdatePatient';
 import { useAppSelector } from 'store';
  
-
 const { Option } = Select;
 
 const PatientTable = ({ patientData, handleDelete, loading }: any) => {

@@ -8,7 +8,6 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 const { Title, Text } = Typography;
-
 const PatientDetails = ({ patientData }: any) => {
   console.log(patientData, 'patientData');
 
@@ -120,6 +119,7 @@ const PatientDetails = ({ patientData }: any) => {
     addField('Admission Date:', new Date(patientData?.patientInformation?.admissionDate).toLocaleDateString(), 2);
     addField('Release Date:', new Date(patientData?.patientInformation?.releaseDate).toLocaleDateString(), 2);
     addField('Hospital Stay:', `${patientData?.patientInformation?.hospitalStay} days`, 2);
+addField('BMI:', `${patientData?.bmi?.value} (${patientData?.bmi?.category})`, defaultValue);
 
     // Set y to the bottom of the longest column
     y = Math.max(y1, y2) + 10;
@@ -325,14 +325,6 @@ const PatientDetails = ({ patientData }: any) => {
     y = addLine(y);
 
 
-
-
-
-
-
-
-
-
    // Add Investigations title
 y = checkPageSpace(y, 20);
 pdf.setFont('helvetica', 'bold');
@@ -432,11 +424,6 @@ let y600 = addInvestigationSection('CBC', patientData?.investigations?.CBC || []
 ]);
 y = Math.max(y400, y500, y600);
 y += 10; // Add space after the second row
-
-
-
-
-
 
 
 pdf.addPage();
@@ -819,6 +806,7 @@ y += 40;
                   {patientData?.patientInformation?.addressDetails}
                 </Text>
               </div>
+              
               <div
                 style={{
                   padding: '10px',
@@ -866,6 +854,21 @@ y += 40;
                 </Text>
                 <Text style={{ fontSize: '1.2rem' }}>
                   {patientData?.patientInformation?.hospitalStay} days
+                </Text>
+              </div>
+              <div
+                style={{
+                  padding: '10px',
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '5px',
+                  marginBottom: '10px',
+                }}
+              >
+                <Text strong style={{ fontSize: '1.2rem' }}>
+                 BMI :{' '}
+                </Text>
+                <Text style={{ fontSize: '1.2rem' }}>
+                {patientData?.bmi?.value} ( {patientData?.bmi?.category} )
                 </Text>
               </div>
             </Col>
