@@ -119,7 +119,7 @@ const PatientDetails = ({ patientData }: any) => {
     addField('Admission Date:', new Date(patientData?.patientInformation?.admissionDate).toLocaleDateString(), 2);
     addField('Release Date:', new Date(patientData?.patientInformation?.releaseDate).toLocaleDateString(), 2);
     addField('Hospital Stay:', `${patientData?.patientInformation?.hospitalStay} days`, 2);
-addField('BMI:', `${patientData?.bmi?.value} (${patientData?.bmi?.category})`, defaultValue);
+    addField('BMI:', `${patientData?.bmi?.value} (${patientData?.bmi?.category})`, 'defaultValue');
 
     // Set y to the bottom of the longest column
     y = Math.max(y1, y2) + 10;
@@ -325,184 +325,184 @@ addField('BMI:', `${patientData?.bmi?.value} (${patientData?.bmi?.category})`, d
     y = addLine(y);
 
 
-   // Add Investigations title
-y = checkPageSpace(y, 20);
-pdf.setFont('helvetica', 'bold');
-pdf.setFontSize(14);
-pdf.text('Investigations', pdfWidth / 2, y, { align: 'center' });
-y += 10;
-
-// Helper function to add an investigation section
-const addInvestigationSection = (title, data, x, y, fields) => {
-  y = checkPageSpace(y, 10);
-  pdf.setFontSize(12);
-  pdf.text(title, x, y);
-  y += 5;
-
-  data.forEach(item => {
-    y = checkPageSpace(y, 15);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(10);
-    fields.forEach(field => {
-      pdf.text(`${field.label}: ${item[field.key]}`, x, y);
-      y += 5;
-    });
-    y += 10;
-  });
-
-  return y;
-};
-
-// Calculate the positions for the columns
-const col100X = 10;
-const col200X = pdfWidth / 3 + 10;
-const col300X = (pdfWidth / 3) * 2 + 10;
-
-// Add the first row of sections
-const startB = y;
-let y100 = addInvestigationSection('Echo Cardiogram', patientData?.investigations?.procedureStudy?.echocardiogram || [], col100X, startB, [
-  { label: 'RWMA', key: 'rwma' },
-  { label: 'LVH', key: 'lvh' },
-  { label: 'Vegetation', key: 'vegetation' },
-  { label: 'LVIDD', key: 'lvidd' },
-  { label: 'EF', key: 'ef' },
-  { label: 'Pericardial Effusion', key: 'pericardialEffusion' },
-  { label: 'Valvular Disease', key: 'valvularDisease' }
-]);
-let y200 = addInvestigationSection('Plural Fluid Study', patientData?.investigations?.procedureStudy?.pluralFluidStudy || [], col200X, startB, [
-  { label: 'Polymorph', key: 'polymorph' },
-  { label: 'Lymphocytes', key: 'lymphocytes' },
-  { label: 'Malignant Cell', key: 'malignantCell' },
-  { label: 'Protein', key: 'protein' },
-  { label: 'Glucose', key: 'glucose' },
-  { label: 'ADA', key: 'ada' }
-]);
-let y300 = addInvestigationSection('CSF Study', patientData?.investigations?.procedureStudy?.csfStudy || [], col300X, startB, [
-  { label: 'Polymorph', key: 'polymorph' },
-  { label: 'Lymphocytes', key: 'lymphocytes' },
-  { label: 'Malignant Cell', key: 'malignantCell' },
-  { label: 'Protein', key: 'protein' },
-  { label: 'Glucose', key: 'glucose' },
-  { label: 'ADA', key: 'ada' },
-  { label: 'Oligoclonal Band', key: 'oligoclonalBand' }
-]);
-y = Math.max(y100, y200, y300);
-y += 10; // Add space after the first row
-
-// Add the second row of sections
-let y400 = addInvestigationSection('Ascitic Fluid Study', patientData?.investigations?.procedureStudy?.asciticFluidStudy || [], col100X, y, [
-  { label: 'Polymorph', key: 'polymorph' },
-  { label: 'Lymphocytes', key: 'lymphocytes' },
-  { label: 'Malignant Cell', key: 'malignantCell' },
-  { label: 'Protein', key: 'protein' },
-  { label: 'Glucose', key: 'glucose' },
-  { label: 'ADA', key: 'ada' },
-  { label: 'SAAG', key: 'saag' }
-]);
-let y500 = addInvestigationSection('Synovial Fluid Study', patientData?.investigations?.procedureStudy?.synovialFluidStudy || [], col200X, y, [
-  { label: 'Polymorph', key: 'polymorph' },
-  { label: 'Lymphocytes', key: 'lymphocytes' },
-  { label: 'Malignant Cell', key: 'malignantCell' },
-  { label: 'Protein', key: 'protein' },
-  { label: 'Glucose', key: 'glucose' },
-  { label: 'ADA', key: 'ada' }
-]);
-let y600 = addInvestigationSection('CBC', patientData?.investigations?.CBC || [], col300X, y, [
-  { label: 'HB', key: 'hb' },
-  { label: 'Platelet Count', key: 'plateletCount' },
-  { label: 'HCT', key: 'hct' },
-  { label: 'TC', key: 'tc' },
-  { label: 'P', key: 'p' },
-  { label: 'L', key: 'l' },
-  { label: 'Reticulocyte Count', key: 'reticulocyteCount' },
-  { label: 'M', key: 'm' },
-  { label: 'B', key: 'b' },
-  { label: 'MCV', key: 'mcv' },
-  { label: 'Total Circulating Eosinophil Count', key: 'totalCirEosinophilCount' },
-  { label: 'ESR', key: 'esr' },
-  { label: 'IgE', key: 'igE' }
-]);
-y = Math.max(y400, y500, y600);
-y += 10; // Add space after the second row
-
-
-pdf.addPage();
-y = margin;
-
-const addFinalPageSectionHorizontal = (sections) => {
-  const sectionWidth = (pdf.internal.pageSize.width - 20) / sections.length; // Divide the page width by the number of sections
-
-  sections.forEach((section, index) => {
-    const x = 10 + (index * sectionWidth); // Calculate the x position for each section
-    let yPos = y; // Reset y position for each section
-
-    // Add title
+    // Add Investigations title
+    y = checkPageSpace(y, 20);
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(12);
-    pdf.text(section.title, x, yPos);
-    yPos += 10;
+    pdf.setFontSize(14);
+    pdf.text('Investigations', pdfWidth / 2, y, { align: 'center' });
+    y += 10;
 
-    // Add data
-    section.data.forEach(item => {
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(10);
-      section.fields.forEach(field => {
-        const text = `${field.label}: ${item[field.key]}`;
-        const textWidth = pdf.getStringUnitWidth(text) * 10 / pdf.internal.scaleFactor;
-        if (textWidth > sectionWidth - 10) {
-          const splitText = pdf.splitTextToSize(text, sectionWidth - 10);
-          pdf.text(splitText, x, yPos);
-          yPos += splitText.length * 5;
-        } else {
-          pdf.text(text, x, yPos);
-          yPos += 5;
-        }
+    // Helper function to add an investigation section
+    const addInvestigationSection = (title, data, x, y, fields) => {
+      y = checkPageSpace(y, 10);
+      pdf.setFontSize(12);
+      pdf.text(title, x, y);
+      y += 5;
+
+      data.forEach(item => {
+        y = checkPageSpace(y, 15);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(10);
+        fields.forEach(field => {
+          pdf.text(`${field.label}: ${item[field.key]}`, x, y);
+          y += 5;
+        });
+        y += 10;
       });
-      yPos += 5;
-    });
-  });
 
-  y += 10; // Add some space after all sections
-};
+      return y;
+    };
 
-// Define sections
-const sections = [
-  {
-    title: 'Urine RME',
-    data: patientData?.investigations?.urineRME || [],
-    fields: [
-      { label: 'Albumin', key: 'albumin' },
-      { label: 'Pus Cell', key: 'pusCell' },
-      { label: 'Sugar', key: 'sugar' },
-      { label: 'Cast', key: 'cast' },
-      { label: 'Ketone Body', key: 'ketoneBody' },
-      { label: 'Bence Jones Protein', key: 'benceJonesProtein' }
-    ]
-  },
-  {
-    title: 'Serum Electrolyte',
-    data: patientData?.investigations?.serumElectrolyte || [],
-    fields: [
-      { label: 'Na', key: 'na' },
-      { label: 'K', key: 'k' },
-      { label: 'Cl', key: 'cl' }
-    ]
-  },
-  {
-    title: 'Other Investigations',
-    data: patientData?.investigations?.investigations || [],
-    fields: [
-      { label: 'Name', key: 'nameOfInvestigations' },
-      { label: 'Value', key: 'value' },
-      { label: 'Comments', key: 'comments' }
-    ]
-  }
-];
+    // Calculate the positions for the columns
+    const col100X = 10;
+    const col200X = pdfWidth / 3 + 10;
+    const col300X = (pdfWidth / 3) * 2 + 10;
 
-// Add sections horizontally
-addFinalPageSectionHorizontal(sections);
+    // Add the first row of sections
+    const startB = y;
+    let y100 = addInvestigationSection('Echo Cardiogram', patientData?.investigations?.procedureStudy?.echocardiogram || [], col100X, startB, [
+      { label: 'RWMA', key: 'rwma' },
+      { label: 'LVH', key: 'lvh' },
+      { label: 'Vegetation', key: 'vegetation' },
+      { label: 'LVIDD', key: 'lvidd' },
+      { label: 'EF', key: 'ef' },
+      { label: 'Pericardial Effusion', key: 'pericardialEffusion' },
+      { label: 'Valvular Disease', key: 'valvularDisease' }
+    ]);
+    let y200 = addInvestigationSection('Plural Fluid Study', patientData?.investigations?.procedureStudy?.pluralFluidStudy || [], col200X, startB, [
+      { label: 'Polymorph', key: 'polymorph' },
+      { label: 'Lymphocytes', key: 'lymphocytes' },
+      { label: 'Malignant Cell', key: 'malignantCell' },
+      { label: 'Protein', key: 'protein' },
+      { label: 'Glucose', key: 'glucose' },
+      { label: 'ADA', key: 'ada' }
+    ]);
+    let y300 = addInvestigationSection('CSF Study', patientData?.investigations?.procedureStudy?.csfStudy || [], col300X, startB, [
+      { label: 'Polymorph', key: 'polymorph' },
+      { label: 'Lymphocytes', key: 'lymphocytes' },
+      { label: 'Malignant Cell', key: 'malignantCell' },
+      { label: 'Protein', key: 'protein' },
+      { label: 'Glucose', key: 'glucose' },
+      { label: 'ADA', key: 'ada' },
+      { label: 'Oligoclonal Band', key: 'oligoclonalBand' }
+    ]);
+    y = Math.max(y100, y200, y300);
+    y += 10; // Add space after the first row
 
-y += 40; 
+    // Add the second row of sections
+    let y400 = addInvestigationSection('Ascitic Fluid Study', patientData?.investigations?.procedureStudy?.asciticFluidStudy || [], col100X, y, [
+      { label: 'Polymorph', key: 'polymorph' },
+      { label: 'Lymphocytes', key: 'lymphocytes' },
+      { label: 'Malignant Cell', key: 'malignantCell' },
+      { label: 'Protein', key: 'protein' },
+      { label: 'Glucose', key: 'glucose' },
+      { label: 'ADA', key: 'ada' },
+      { label: 'SAAG', key: 'saag' }
+    ]);
+    let y500 = addInvestigationSection('Synovial Fluid Study', patientData?.investigations?.procedureStudy?.synovialFluidStudy || [], col200X, y, [
+      { label: 'Polymorph', key: 'polymorph' },
+      { label: 'Lymphocytes', key: 'lymphocytes' },
+      { label: 'Malignant Cell', key: 'malignantCell' },
+      { label: 'Protein', key: 'protein' },
+      { label: 'Glucose', key: 'glucose' },
+      { label: 'ADA', key: 'ada' }
+    ]);
+    let y600 = addInvestigationSection('CBC', patientData?.investigations?.CBC || [], col300X, y, [
+      { label: 'HB', key: 'hb' },
+      { label: 'Platelet Count', key: 'plateletCount' },
+      { label: 'HCT', key: 'hct' },
+      { label: 'TC', key: 'tc' },
+      { label: 'P', key: 'p' },
+      { label: 'L', key: 'l' },
+      { label: 'Reticulocyte Count', key: 'reticulocyteCount' },
+      { label: 'M', key: 'm' },
+      { label: 'B', key: 'b' },
+      { label: 'MCV', key: 'mcv' },
+      { label: 'Total Circulating Eosinophil Count', key: 'totalCirEosinophilCount' },
+      { label: 'ESR', key: 'esr' },
+      { label: 'IgE', key: 'igE' }
+    ]);
+    y = Math.max(y400, y500, y600);
+    y += 10; // Add space after the second row
+
+
+    pdf.addPage();
+    y = margin;
+
+    const addFinalPageSectionHorizontal = (sections) => {
+      const sectionWidth = (pdf.internal.pageSize.width - 20) / sections.length; // Divide the page width by the number of sections
+
+      sections.forEach((section, index) => {
+        const x = 10 + (index * sectionWidth); // Calculate the x position for each section
+        let yPos = y; // Reset y position for each section
+
+        // Add title
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(12);
+        pdf.text(section.title, x, yPos);
+        yPos += 10;
+
+        // Add data
+        section.data.forEach(item => {
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(10);
+          section.fields.forEach(field => {
+            const text = `${field.label}: ${item[field.key]}`;
+            const textWidth = pdf.getStringUnitWidth(text) * 10 / pdf.internal.scaleFactor;
+            if (textWidth > sectionWidth - 10) {
+              const splitText = pdf.splitTextToSize(text, sectionWidth - 10);
+              pdf.text(splitText, x, yPos);
+              yPos += splitText.length * 5;
+            } else {
+              pdf.text(text, x, yPos);
+              yPos += 5;
+            }
+          });
+          yPos += 5;
+        });
+      });
+
+      y += 10; // Add some space after all sections
+    };
+
+    // Define sections
+    const sections = [
+      {
+        title: 'Urine RME',
+        data: patientData?.investigations?.urineRME || [],
+        fields: [
+          { label: 'Albumin', key: 'albumin' },
+          { label: 'Pus Cell', key: 'pusCell' },
+          { label: 'Sugar', key: 'sugar' },
+          { label: 'Cast', key: 'cast' },
+          { label: 'Ketone Body', key: 'ketoneBody' },
+          { label: 'Bence Jones Protein', key: 'benceJonesProtein' }
+        ]
+      },
+      {
+        title: 'Serum Electrolyte',
+        data: patientData?.investigations?.serumElectrolyte || [],
+        fields: [
+          { label: 'Na', key: 'na' },
+          { label: 'K', key: 'k' },
+          { label: 'Cl', key: 'cl' }
+        ]
+      },
+      {
+        title: 'Other Investigations',
+        data: patientData?.investigations?.investigations || [],
+        fields: [
+          { label: 'Name', key: 'nameOfInvestigations' },
+          { label: 'Value', key: 'value' },
+          { label: 'Comments', key: 'comments' }
+        ]
+      }
+    ];
+
+    // Add sections horizontally
+    addFinalPageSectionHorizontal(sections);
+
+    y += 40;
 
 
     y = addLine(y);
@@ -806,7 +806,7 @@ y += 40;
                   {patientData?.patientInformation?.addressDetails}
                 </Text>
               </div>
-              
+
               <div
                 style={{
                   padding: '10px',
@@ -865,10 +865,10 @@ y += 40;
                 }}
               >
                 <Text strong style={{ fontSize: '1.2rem' }}>
-                 BMI :{' '}
+                  BMI :{' '}
                 </Text>
                 <Text style={{ fontSize: '1.2rem' }}>
-                {patientData?.bmi?.value} ( {patientData?.bmi?.category} )
+                  {patientData?.bmi?.value} ( {patientData?.bmi?.category} )
                 </Text>
               </div>
             </Col>
